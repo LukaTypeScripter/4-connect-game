@@ -2,6 +2,7 @@
 import { RulesCont } from '../rules/style/style'
 import { GameHeader } from './gameStyles/game'
 import { BtnGame } from '../../components/styled/GlobalButtonGame'
+import MainBoard from './MainBoard'
 
 function Game() {
   return (
@@ -41,6 +42,7 @@ function Game() {
 <BtnGame>Restart</BtnGame>
 </div>
         </GameHeader>
+        <MainBoard />
     </RulesCont>
   )
 }
