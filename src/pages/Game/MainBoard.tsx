@@ -1,117 +1,70 @@
 import styled from "styled-components";
 import {
-  boardLayerWhiteLarge, counterRedLarge, counterYellowLarge,
+  boardLayerWhiteLarge,
+  counterRedLarge,
+  counterYellowLarge,
+  turnBackgroundRed,
+  turnBackgroundYellow,
 } from "../../assets/images";
-import React, { useState } from "react";
-import { ThirdColumn, fifthColumn, firstColumn, fourthColumn, secondColumn, seventhColumn, sixthColumn } from "./gameStyles/funcs/MainBoardFuncs";
+import React, { useContext, useEffect } from "react";
+import {
+  ThirdColumn,
+  fifthColumn,
+  firstColumn,
+  fourthColumn,
+  secondColumn,
+  seventhColumn,
+  sixthColumn,
+} from "./gameStyles/funcs/MainBoardFuncs";
+import MainBoardContext from "../../contexts/Mainboards";
+import { motion } from "framer-motion";
 
 function MainBoard() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [showImage, setShowImage] = useState(false);
-  const [position, setPosition] = useState("");
-  const [currentPlayer, setCurrentPlayer] = useState("Player1");
- 
-  const createEmptyBoard = () => {
-    const rows = 6;
-    const columns = 7;
-    return Array.from({ length: rows }, () => Array(columns).fill(null));
-  };
-  const [board, setBoard] = useState(createEmptyBoard());
+  const {
+    position,
+    setShowImage,
+    setPosition,
+    handleColumnClick,
+    checkWinCondition,
+    board,
+    currentPlayer,
+    setCurrentPlayer,
+    winner,
+    gameEnds,
+    winPoints,
+    playAgain,
+    setTimer,
+    timer,
+    timerPaused,
+  } = useContext(MainBoardContext);
 
-
-  
-  const handleColumnClick = (columnIndex: number) => {
-    const rowIndex = findLowestEmptyRow(columnIndex);
-  
-    if (rowIndex !== -1) {
-      // Check if the column index is within bounds
-      if (columnIndex >= 0 && columnIndex < board[0].length) {
-        const newBoard = [...board];
-        // Check if the row index is within bounds
-        if (rowIndex >= 0 && rowIndex < newBoard.length) {
-          newBoard[rowIndex][columnIndex] = currentPlayer;
-          setBoard(newBoard);
-  
-          if (checkWinCondition(rowIndex, columnIndex)) {
-            console.log(`${currentPlayer} wins!`);
-            // Handle game over logic here
-          } else {
-            setCurrentPlayer(currentPlayer === "Player1" ? "Player2" : "Player1");
-          }
+  useEffect(() => {
+    setTimer(30);
+  }, [currentPlayer]);
+  useEffect(() => {
+    if (!timerPaused && timer > 0) {
+      const interval = setInterval(() => {
+        if (timer > 0) {
+          setTimer(timer - 1);
         } else {
-          console.log("Invalid row index");
+          if (currentPlayer === "Player1") {
+            setCurrentPlayer("Player2");
+          } else {
+            setCurrentPlayer("Player1");
+          }
         }
-      } else {
-        console.log("Invalid column index");
-      }
+      }, 1000);
+  
+      return () => {
+        clearInterval(interval);
+      };
     }
-  };
-  const findLowestEmptyRow = (columnIndex:number) => {
-    for (let rowIndex = board.length - 1; rowIndex >= 0; rowIndex--) {
-      if (!board[rowIndex][columnIndex]) {
-        return rowIndex;
-      }
-    }
-    return -1;
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const checkWinCondition = (rowIndex:number, columnIndex:number,board?:any) => {
-    //CHeck horizontaly
-    for(let c = 0; c <=7 - 4;c++) {
-      if(
-        board[rowIndex][c] === currentPlayer &&
-        board[rowIndex][c+1] === currentPlayer&&
-        board[rowIndex][c+2] === currentPlayer&&
-        board[rowIndex][c+3] === currentPlayer
-      ){
-        return true
-      }
-    }
-     //CHeck verticly
-     for(let c = 0; c <=7 - 4;c++) {
-      if(
-        board[rowIndex][columnIndex] === currentPlayer &&
-        board[rowIndex + 1][columnIndex] === currentPlayer&&
-        board[rowIndex + 2][columnIndex] === currentPlayer&&
-        board[rowIndex + 3][columnIndex] === currentPlayer
-      ){
-        return true
-      }
-    }
-    //check diagonally
-    for(let r = 0; r <=7 - 4;r++) {
-      for(let c = 0;c <= 6 - 4;c++) {
-      if(
-        board[r][c] === currentPlayer &&
-        board[r+1][c+1] === currentPlayer&&
-        board[r+2][c+2] === currentPlayer&&
-        board[r+3][c+3] === currentPlayer
-      ){
-        return true
-      }
-    }
-    }
-    for(let r = 0; r <=7 - 4;r++) {
-      for(let c = 0;c <= 6 - 4;c++) {
-      if(
-        board[r][c] === currentPlayer &&
-        board[r+1][c-1] === currentPlayer&&
-        board[r+2][c-2] === currentPlayer&&
-        board[r+3][c-3] === currentPlayer
-      ){
-        return true
-      }
-    }
-    }
-    return false;
-  };
-
+  }, [timer, timerPaused, currentPlayer]);
   return (
     <MainBoardCont position={position}>
       <Player1>
-        <h3>you</h3>
-        <h2>0</h2>
+        <h3>Player1</h3>
+        <h2>{winPoints.player1}</h2>
 
         <svg
           width="54px"
@@ -249,62 +202,80 @@ function MainBoard() {
           <Cols
             data-columnnum="0"
             data-testid="column0"
-            onMouseEnter={() => firstColumn(setPosition,setShowImage)}
+            onMouseEnter={() => firstColumn(setPosition, setShowImage)}
             onMouseLeave={() => setShowImage(false)}
             onClick={() => handleColumnClick(0)}
           ></Cols>
           <Cols
             data-columnnum="1"
             data-testid="column0"
-            onMouseEnter={() => secondColumn(setPosition,setShowImage)}
+            onMouseEnter={() => secondColumn(setPosition, setShowImage)}
             onMouseLeave={() => setShowImage(false)}
             onClick={() => handleColumnClick(1)}
           ></Cols>
-          <Cols data-columnnum="2" data-testid="column0"
-            onMouseEnter={() => ThirdColumn(setPosition,setShowImage)}
+          <Cols
+            data-columnnum="2"
+            data-testid="column0"
+            onMouseEnter={() => ThirdColumn(setPosition, setShowImage)}
             onMouseLeave={() => setShowImage(false)}
             onClick={() => handleColumnClick(2)}
           ></Cols>
-          <Cols data-columnnum="3" data-testid="column0"
-          onMouseEnter={() => fourthColumn(setPosition,setShowImage)}
-          onMouseLeave={() => setShowImage(false)}
-          onClick={() => handleColumnClick(3)}
+          <Cols
+            data-columnnum="3"
+            data-testid="column0"
+            onMouseEnter={() => fourthColumn(setPosition, setShowImage)}
+            onMouseLeave={() => setShowImage(false)}
+            onClick={() => handleColumnClick(3)}
           ></Cols>
-          <Cols data-columnnum="4" data-testid="column0"
-            onMouseEnter={() => fifthColumn(setPosition,setShowImage)}
+          <Cols
+            data-columnnum="4"
+            data-testid="column0"
+            onMouseEnter={() => fifthColumn(setPosition, setShowImage)}
             onMouseLeave={() => setShowImage(false)}
             onClick={() => handleColumnClick(4)}
           ></Cols>
-          <Cols data-columnnum="5" data-testid="column0"
-            onMouseEnter={() => sixthColumn(setPosition,setShowImage)}
+          <Cols
+            data-columnnum="5"
+            data-testid="column0"
+            onMouseEnter={() => sixthColumn(setPosition, setShowImage)}
             onMouseLeave={() => setShowImage(false)}
             onClick={() => handleColumnClick(5)}
           ></Cols>
-          <Cols data-columnnum="6" data-testid="column0"
-          onMouseEnter={() => seventhColumn(setPosition,setShowImage)}
-          onMouseLeave={() => setShowImage(false)}
-          onClick={() => handleColumnClick(6)}
+          <Cols
+            data-columnnum="6"
+            data-testid="column0"
+            onMouseEnter={() => seventhColumn(setPosition, setShowImage)}
+            onMouseLeave={() => setShowImage(false)}
+            onClick={() => handleColumnClick(6)}
           ></Cols>
         </div>
         <CounterGrid>
   {board.map((row, rowIndex: number) => (
     <React.Fragment key={rowIndex}>
       {row.map((cell, columnIndex: number) => (
-        <div
-          style={{ width: '7rem', height: '7rem' }}
+        <motion.div
+          className={`circle-cell ${cell ? "dropped" : ""}`}
+          style={{ width: "7rem", height: "7rem" }}
           key={columnIndex}
-          onClick={() => checkWinCondition(rowIndex, columnIndex, board)} 
+          onClick={() => checkWinCondition(rowIndex, columnIndex)}
+          initial={{ translateY: -100, opacity: 0 }}
+          animate={{ translateY: 0, opacity: 1 }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
-          {cell === 'Player1' ? <CircleRed /> : cell === 'Player2' ? <Circle /> : null}
-        </div>
+          {cell === "Player1" ? (
+            <CircleRed />
+          ) : cell === "Player2" ? (
+            <Circle />
+          ) : null}
+        </motion.div>
       ))}
     </React.Fragment>
   ))}
 </CounterGrid>
       </div>
       <Player2>
-        <h3>you</h3>
-        <h2>0</h2>
+        <h3>Player2</h3>
+        <h2>{winPoints.player2}</h2>
 
         <svg
           width="54px"
@@ -376,6 +347,20 @@ function MainBoard() {
           </g>
         </svg>
       </Player2>
+      <GameInfo currentPlayer={currentPlayer}>
+        {gameEnds ? (
+          <div className="winner">
+            <h4>{winner}</h4>
+            <h2>Wins</h2>
+            <button onClick={playAgain}>Play Again</button>
+          </div>
+        ) : (
+          <div className="game__turns">
+            <h4>{currentPlayer} Turn</h4>
+            <h2>{timer}s</h2>
+          </div>
+        )}
+      </GameInfo>
     </MainBoardCont>
   );
 }
@@ -385,31 +370,110 @@ const Cols = styled.div`
   &:hover {
   }
 `;
-const Circle = styled.div`
-    display: flex;
-    -webkit-box-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    justify-content: center;
-    width: 100%;
-    height: 100%;
-    background-image: url(${counterRedLarge});
+const GameInfo = styled.div<{ currentPlayer: string }>`
+  grid-area: gameInfo / gameInfo / gameInfo / gameInfo;
+  margin-top: -7rem;
+  z-index: 5;
+  justify-self: center;
+  .game__turns {
+    width: 19.4rem;
+    height: 16.3rem;
+    background-color: transparent;
+    background-image: ${(props) =>
+      props.currentPlayer === "Player1"
+        ? `url(${turnBackgroundYellow})`
+        : `url(${turnBackgroundRed})`};
     background-repeat: no-repeat;
     background-size: cover;
-`
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    color: var(--color-black);
+    h4 {
+      font-size: var(--font-size-heading-xs);
+      line-height: var(--font-line-heading-xs);
+      text-transform: uppercase;
+      margin-top: 2rem;
+    }
+    h2 {
+      font-size: var(--font-size-heading-l);
+      line-height: var(--font-line-heading-l);
+    }
+  }
+  .winner {
+    width: 28.5rem;
+    height: 16rem;
+    border: solid 3px var(--color-black);
+    box-shadow: 0px 1rem 0px var(--color-black);
+    border-radius: 2rem;
+    background-color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    -webkit-box-pack: center;
+    justify-content: center;
+    -webkit-box-align: center;
+    align-items: center;
+    z-index: 5;
+    h4 {
+      font-size: var(--font-size-heading-xs);
+      line-height: var(--font-line-heading-xs);
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+    h2 {
+      font-size: var(--font-size-heading-l);
+      line-height: var(--font-line-heading-l);
+      text-transform: uppercase;
+    }
+    button {
+      outline: none;
+      font-family: inherit;
+      background-color: var(--color-dark-purple);
+      color: var(--color-white);
+      padding: 0rem 2rem;
+      border-radius: 3rem;
+      font-size: var(--font-size-heading-xs);
+      line-height: var(--font-line-heading-xs);
+      font-weight: bold;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: transfrom 0.3s ease 0s;
+      border: none;
+      min-height: 3.9rem;
+      max-height: 3.9rem;
+      width: fit-content;
+      min-width: 10rem;
+    }
+  }
+`;
+const Circle = styled.div`
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background-image: url(${counterRedLarge});
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
 const CircleRed = styled(Circle)`
-    
-background-image: url(${counterYellowLarge});
-`
+  background-image: url(${counterYellowLarge});
+`;
 const CounterGrid = styled.div`
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    grid-template-rows: repeat(6, 1fr);
-    padding: 1.7rem 1.7rem 0px;
-    gap: 1.8rem;
-    position: absolute;
-    z-index: 3;
-`
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  padding: 1.7rem 1.7rem 0px;
+  gap: 1.8rem;
+  position: absolute;
+  z-index: 3;
+
+`;
 const Player1 = styled.div`
   width: 14rem;
   height: 16rem;

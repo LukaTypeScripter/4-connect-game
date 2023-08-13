@@ -1,15 +1,17 @@
-
+import {useContext} from 'react'
 import { RulesCont } from '../rules/style/style'
 import { GameHeader } from './gameStyles/game'
 import { BtnGame } from '../../components/styled/GlobalButtonGame'
 import MainBoard from './MainBoard'
+import MainBoardContext from '../../contexts/Mainboards'
 
 function Game() {
+    const {resetGame,openMenuModal} = useContext(MainBoardContext)
   return (
     <RulesCont>
         <GameHeader>
             <div>
-                <BtnGame>menu</BtnGame>
+                <BtnGame onClick={openMenuModal}>menu</BtnGame>
             </div>
 <svg width="58px" height="61px" viewBox="0 0 58 61" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
     <title>logo</title>
@@ -39,7 +41,7 @@ function Game() {
     </g>
 </svg>
 <div>
-<BtnGame>Restart</BtnGame>
+<BtnGame onClick={resetGame}>Reset</BtnGame>
 </div>
         </GameHeader>
         <MainBoard />

@@ -81,16 +81,9 @@ function Home() {
             <Button
               bgColor="#FD6687"
               color="#FFFFFF"
-              Text="player vs cpu"
+              Text="player vs Player"
               onClick={() => navigate("/game")}
               img={playerVsPlayer}
-            />
-            <Button
-              bgColor="#FFCE67"
-              color="#000000"
-              Text="player vs player"
-              onClick={() => navigate("/game")}
-              img={playerVsCpu}
             />
             <Button
               bgColor="#FFFFFF"

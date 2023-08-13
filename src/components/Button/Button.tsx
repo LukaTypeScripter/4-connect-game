@@ -14,10 +14,11 @@ type ButtonProps = {
   padding?: string
   borderColor?: string
   img?:string
+  TextAlign?: string
 }
-function Button({ height, bgColor, color, Text, borderRadius, border, width, heigth, onClick,  padding, borderColor,img }: ButtonProps) {
+function Button({ height, bgColor, color, Text, borderRadius, border, width, heigth, onClick,  padding, borderColor,img,TextAlign }: ButtonProps) {
   return (
-    <Btn onClick={onClick} padding={padding} height={height} bgColor={bgColor} color={color} type='submit' borderRadius={borderRadius} borderColor={borderColor} border={border} width={width} heigth={heigth}>
+    <Btn onClick={onClick} padding={padding} height={height} bgColor={bgColor} color={color} type='submit' borderRadius={borderRadius} TextAlign={TextAlign} borderColor={borderColor} border={border} width={width} heigth={heigth}>
         <div>
             <h2>{Text}</h2>
             <img src={img ? img : ""} alt={img ? "imgs" : ""} />
@@ -33,6 +34,7 @@ const Btn = styled.button<ButtonProps>`
     border-color: ${props => props.borderColor};
     box-shadow: 0px 1rem 0px var(--color-black);
     color: ${props => props.color};
+
     outline: none;
     cursor: pointer;
     height: 7.2rem;
@@ -49,6 +51,7 @@ const Btn = styled.button<ButtonProps>`
     color: inherit;
     width: 100%;
     }
+  
 `
 
 export default Button
