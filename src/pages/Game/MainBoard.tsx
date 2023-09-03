@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import {
   boardLayerWhiteLarge,
+  boardLayerWhiteSmall,
   counterRedLarge,
   counterYellowLarge,
   turnBackgroundRed,
@@ -138,6 +139,7 @@ function MainBoard() {
       </Player1>
       <div className="board">
         <img src={boardLayerWhiteLarge} alt="" className="white" />
+        <img src={boardLayerWhiteSmall} alt="" className="small" />
         <div className="control">
           <div className="control__header">
             <div className="control__header__img">
@@ -255,7 +257,7 @@ function MainBoard() {
       {row.map((cell, columnIndex: number) => (
         <motion.div
           className={`circle-cell ${cell ? "dropped" : ""}`}
-          style={{ width: "7rem", height: "7rem" }}
+         
           key={columnIndex}
           onClick={() => checkWinCondition(rowIndex, columnIndex)}
           initial={{ translateY: -100, opacity: 0 }}
@@ -369,6 +371,9 @@ const Cols = styled.div`
   cursor: pointer;
   &:hover {
   }
+  @media (max-width: 768px) {
+    width: 4.1rem;
+  }
 `;
 const GameInfo = styled.div<{ currentPlayer: string }>`
   grid-area: gameInfo / gameInfo / gameInfo / gameInfo;
@@ -472,6 +477,17 @@ const CounterGrid = styled.div`
   gap: 1.8rem;
   position: absolute;
   z-index: 3;
+.circle-cell {
+  width:7rem;
+  @media (max-width: 768px) {
+    width: 4.1rem;
+    height:4.1rem;
+  }
+}
+@media (max-width: 768px){
+  padding: 0.8rem 0.8rem 0px;
+    gap: 0.55rem;
+}
 
 `;
 const Player1 = styled.div`
@@ -490,6 +506,7 @@ const Player1 = styled.div`
   grid-area: player1 / player1 / player1 / player1;
   position: relative;
   align-self: center;
+  
   h3 {
     font-size: var(--font-size-heading-s);
     line-height: var(--font-line-heading-s);
@@ -504,6 +521,30 @@ const Player1 = styled.div`
     position: absolute;
     top: -3rem;
   }
+  @media (max-width: 985px) {
+    width: 100%;
+    height: 10rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "first second";
+    padding-left: 4.4rem;
+    padding-right: 2rem;
+    h3 {
+      margin-top:0;
+    }
+    svg {
+      top: 50%;
+      left: -3rem;
+    transform: translateY(-50%);
+    }
+  }
+  @media (max-width: 760px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 0;
+  }
 `;
 const Player2 = styled(Player1)`
   grid-area: player2 / player2 / player2 / player2;
@@ -515,12 +556,23 @@ const MainBoardCont = styled.section<{ position: string }>`
   gap: 6rem;
   position: relative;
   grid-template: "player1 board player2" max-content "gameInfo gameInfo gameInfo" max-content / 1fr max-content 1fr;
-
+  @media (max-width: 985px) {
+    gap: 3.4rem;
+    grid-template:
+        "player1 player2" 1fr
+        "board board" max-content
+        "gameInfo gameInfo" max-content / 1fr 1fr;
+    margin-top: 1.6rem;
+  }
   .board {
     position: relative;
     width: 63.2rem;
     height: 58.4rem;
     grid-area: board / board / board / board;
+    @media (max-width: 768px) {
+      width: 33.5rem !important;
+    height: 31rem !important;
+    }
     .black__large {
       width: 632px;
       height: 584px;
@@ -528,6 +580,19 @@ const MainBoardCont = styled.section<{ position: string }>`
     .white {
       position: absolute;
       z-index: 4;
+    }
+    .small {
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .white {
+        display:none;
+      }
+      .small {
+        display: block;
+        position: absolute;
+    z-index: 4;
+      }
     }
   }
   .control {
@@ -538,6 +603,10 @@ const MainBoardCont = styled.section<{ position: string }>`
     height: 100%;
     position: absolute;
     z-index: 6;
+    @media (max-width: 768px) {
+      padding: 0px 0.8rem;
+    gap: 0.55rem;
+    }
   }
   .control__header {
     display: grid;
@@ -555,6 +624,9 @@ const MainBoardCont = styled.section<{ position: string }>`
       display: flex;
       -webkit-box-pack: center;
       justify-content: center;
+    }
+    @media (max-width: 768px) {
+      display: none;
     }
   }
   .board {

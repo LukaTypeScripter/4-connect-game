@@ -1,7 +1,7 @@
 import Button from "../../components/Button/Button";
 import { BtnWrapper, Container, InsideWrapper, MainMenu } from "./styles/Home";
 import { useNavigate } from "react-router-dom";
-import { playerVsPlayer, playerVsCpu } from "../../assets/images/index";
+import { playerVsPlayer } from "../../assets/images/index";
 function Home() {
   const navigate = useNavigate();
   return (
