@@ -479,6 +479,7 @@ const CounterGrid = styled.div`
   z-index: 3;
 .circle-cell {
   width:7rem;
+  height:7rem;
   @media (max-width: 768px) {
     width: 4.1rem;
     height:4.1rem;
